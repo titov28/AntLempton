@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <thread>
+#include <Windows.h>
 #include "Ant.h"
 
 using namespace std;
@@ -8,21 +9,30 @@ using namespace std;
 
 
 void Print(char **field, int sizeX, int sizeY, Ant &ant);
+void HardPrint(char **field2, int sizeN1, int sizeN2, char **field, int sizeX, int sizeY, Ant &ant);
+
 char **  UpgradeFieldandAny(char **field, int &maxSizeX, int &maxSizeY, Ant &ant);
 char ** CopyArray(char **field, int sizeX, int sizeY, int sizeX1, int sizeY1, int flag);
 
 int main() {
 
-	int maxSizeX = 10;
-	int maxSizeY = 10;
+	int maxSizeX = 80;
+	int maxSizeY = 80;
 
-	Ant myAnt = {0, 0 ,0 ,1};
+	int n1 = 300;
+	int n2 = 80;
+
+	Ant myAnt = {10, 10, 10, 11};
 	char **field = new char*[maxSizeX];
+	char **field2 = new char*[n1];
+
 
 	for (int i = 0; i < maxSizeX; i++) {
 		field[i] = new char[maxSizeY];
+		field2[i] = new char[n2];
 		for (int j = 0; j < maxSizeY; j++) {
 			field[i][j] = ' ';
+			field2[i][j] = ' ';
 		}
 	}
 
@@ -43,11 +53,12 @@ int main() {
 			StepLeft(&myAnt, maxSizeX, maxSizeY);
 		}
 
-		if (count == 1000) {
-			Print(field, maxSizeX, maxSizeY, myAnt);
+		//if (count == 100) {
+		    HardPrint(field2, n1, n2, field, maxSizeX, maxSizeY, myAnt);
+			//Print(field, maxSizeX, maxSizeY, myAnt);
 			count = 0;
-		}
-		//this_thread::sleep_for(chrono::milliseconds(1000));
+		//}
+		this_thread::sleep_for(chrono::milliseconds(100));
 
 		count++;
 	}
@@ -60,7 +71,28 @@ int main() {
 }
 
 
+void HardPrint(char **field2, int sizeN1, int sizeN2, char **field, int sizeX, int sizeY, Ant &ant) {
+	COORD position;
+	HANDLE hout = GetStdHandle(STD_OUTPUT_HANDLE);
 
+	for (int i = 0; i < sizeN1; i++) {
+		for (int j = 0; j < sizeN2; j++) {
+			if (i < sizeX && j < sizeY) {
+				if (field2[i, j] != field[i, j]) {
+					position.X = i;
+					position.Y = j;
+					SetConsoleCursorPosition(hout, position);
+					printf_s("%c", field[j][i]);
+				}
+			}
+		}
+		//printf_s("\n");
+	}
+
+
+	printf_s("\nSize x = %4d y = %4d", sizeX, sizeY);
+	printf_s("\nAnt x = %3d y = %3d LastX = %3d LastY = %3d", ant.x, ant.y, ant.lastX, ant.lastY);
+}
 
 
 void Print(char **field, int sizeX, int sizeY, Ant &ant) {
