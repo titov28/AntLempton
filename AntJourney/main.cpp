@@ -53,12 +53,12 @@ int main() {
 			StepLeft(&myAnt, maxSizeX, maxSizeY);
 		}
 
-		//if (count == 100) {
+		if (count == 10) {
 		    HardPrint(field2, n1, n2, field, maxSizeX, maxSizeY, myAnt);
 			//Print(field, maxSizeX, maxSizeY, myAnt);
 			count = 0;
-		//}
-		this_thread::sleep_for(chrono::milliseconds(100));
+		}
+		//this_thread::sleep_for(chrono::milliseconds(100));
 
 		count++;
 	}
